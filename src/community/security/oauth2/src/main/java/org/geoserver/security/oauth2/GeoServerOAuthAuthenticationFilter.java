@@ -9,6 +9,7 @@ import static com.google.common.collect.Lists.newArrayList;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -42,6 +43,7 @@ import org.springframework.security.oauth2.client.token.AccessTokenRequest;
 import org.springframework.security.oauth2.client.token.grant.code.AuthorizationCodeResourceDetails;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -126,29 +128,29 @@ public abstract class GeoServerOAuthAuthenticationFilter
         final Collection<? extends GrantedAuthority> authorities = (authentication != null
                 ? authentication.getAuthorities() : null);
 
-        if (accessToken == null && gnCookie == null && 
-                (authentication != null && (authentication instanceof PreAuthenticatedAuthenticationToken) &&  
-                !(authorities.size() == 1 && authorities.contains(GeoServerRole.ANONYMOUS_ROLE)))) {
-            final AccessTokenRequest accessTokenRequest = restTemplate.getOAuth2ClientContext()
-                    .getAccessTokenRequest();
-            if (accessTokenRequest != null && accessTokenRequest.getStateKey() != null) {
-                restTemplate.getOAuth2ClientContext()
-                        .removePreservedState(accessTokenRequest.getStateKey());
-            }
-            
-            try {
-                accessTokenRequest.remove("access_token");
-            } finally {
-                SecurityContextHolder.clearContext();
-                httpRequest.getSession(false).invalidate();
-                try {
-                    httpRequest.logout();
-                } catch (ServletException e) {
-                    LOGGER.fine(e.getLocalizedMessage());
-                }
-                LOGGER.fine("Cleaned out Session Access Token Request!");
-            }
-        }
+//        if (accessToken == null && gnCookie == null &&
+//                (authentication != null && (authentication instanceof PreAuthenticatedAuthenticationToken) &&
+//                !(authorities.size() == 1 && authorities.contains(GeoServerRole.ANONYMOUS_ROLE)))) {
+//            final AccessTokenRequest accessTokenRequest = restTemplate.getOAuth2ClientContext()
+//                    .getAccessTokenRequest();
+//            if (accessTokenRequest != null && accessTokenRequest.getStateKey() != null) {
+//                restTemplate.getOAuth2ClientContext()
+//                        .removePreservedState(accessTokenRequest.getStateKey());
+//            }
+//
+//            try {
+//                accessTokenRequest.remove("access_token");
+//            } finally {
+//                SecurityContextHolder.clearContext();
+//                httpRequest.getSession(false).invalidate();
+//                try {
+//                    httpRequest.logout();
+//                } catch (ServletException e) {
+//                    LOGGER.fine(e.getLocalizedMessage());
+//                }
+//                LOGGER.fine("Cleaned out Session Access Token Request!");
+//            }
+//        }
 
         if (accessToken != null || authentication == null || (authentication != null
                 && authorities.size() == 1 && authorities.contains(GeoServerRole.ANONYMOUS_ROLE))) {
@@ -332,6 +334,45 @@ public abstract class GeoServerOAuthAuthenticationFilter
         }
     }
 
+    protected String extractToken(HttpServletRequest request) {
+        String token = extractHeaderToken(request);
+
+        if (token == null) {
+            LOGGER.log(Level.FINE, "Token not found in headers. Trying request parameters.");
+            token = request.getParameter(OAuth2AccessToken.ACCESS_TOKEN);
+            if (token == null) {
+                LOGGER.log(Level.FINE,"Token not found in request parameters.  Not an OAuth2 request.");
+            }
+            else {
+                request.setAttribute(OAuth2AuthenticationDetails.ACCESS_TOKEN_TYPE, OAuth2AccessToken.BEARER_TYPE);
+            }
+        }
+
+        return token;
+    }
+
+
+    protected String extractHeaderToken(HttpServletRequest request) {
+        Enumeration<String> headers = request.getHeaders("Authorization");
+        while (headers.hasMoreElements()) { // typically there is only one (most servers enforce that)
+            String value = headers.nextElement();
+            if ((value.toLowerCase().startsWith(OAuth2AccessToken.BEARER_TYPE.toLowerCase()))) {
+                String authHeaderValue = value.substring(OAuth2AccessToken.BEARER_TYPE.length()).trim();
+                // Add this here for the auth details later. Would be better to change the signature of this method.
+                request.setAttribute(OAuth2AuthenticationDetails.ACCESS_TOKEN_TYPE,
+                        value.substring(0, OAuth2AccessToken.BEARER_TYPE.length()).trim());
+                int commaIndex = authHeaderValue.indexOf(',');
+                if (commaIndex > 0) {
+                    authHeaderValue = authHeaderValue.substring(0, commaIndex);
+                }
+                return authHeaderValue;
+            }
+        }
+
+        return null;
+    }
+
+
     protected String getPreAuthenticatedPrincipal(HttpServletRequest req, HttpServletResponse resp)
             throws IOException, ServletException {
 
@@ -344,7 +385,7 @@ public abstract class GeoServerOAuthAuthenticationFilter
          */
 
         // Search for an access_token on the request (simulating SSO)
-        String accessToken = req.getParameter("access_token");
+        String accessToken = this.extractToken(req);
 
         if (accessToken != null) {
             restTemplate.getOAuth2ClientContext()
@@ -359,6 +400,7 @@ public abstract class GeoServerOAuthAuthenticationFilter
         Authentication authentication = null;
         try {
             authentication = filter.attemptAuthentication(req, null);
+            LOGGER.log(Level.FINE, "token: " + ((OAuth2AuthenticationDetails)authentication.getDetails()).getTokenType() + " " + ((OAuth2AuthenticationDetails)authentication.getDetails()).getTokenValue());
         } catch (Exception e) {
             if (e instanceof UserRedirectRequiredException) {
                 if (filterConfig.getEnableRedirectAuthenticationEntryPoint()
