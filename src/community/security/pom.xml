@@ -45,7 +45,14 @@
         <module>oauth2-geonode</module>
       </modules>
     </profile>
-    
+
+    <profile>
+      <id>oauth2</id>
+      <modules>
+        <module>oauth2</module>
+      </modules>
+    </profile>
+
   </profiles>
 
   <modules>

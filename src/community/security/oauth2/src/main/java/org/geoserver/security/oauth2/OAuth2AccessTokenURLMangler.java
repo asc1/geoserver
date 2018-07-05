@@ -70,8 +70,15 @@ public class OAuth2AccessTokenURLMangler implements URLMangler {
     }
 
     @Override
-    public void mangleURL(
-            StringBuilder baseURL, StringBuilder path, Map<String, String> kvp, URLType type) {
+    public void mangleURL(StringBuilder baseURL, StringBuilder path, Map<String, String> kvp,
+            URLType type) {
+
+        if ((path.toString().endsWith("ows") || path.toString().endsWith("wms"))
+                && kvp.isEmpty() && !path.toString().startsWith("/gwc/")) {
+            // don't mangle preview links
+            return;
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         OAuth2AccessToken token =
@@ -80,7 +87,7 @@ public class OAuth2AccessTokenURLMangler implements URLMangler {
                 && authentication.isAuthenticated()
                 && token != null
                 && token.getTokenType().equalsIgnoreCase(OAuth2AccessToken.BEARER_TYPE)) {
-            kvp.put("access_token", token.getValue());
+            kvp.put(OAuth2AccessToken.ACCESS_TOKEN, token.getValue());
         }
     }
 }
