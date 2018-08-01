@@ -47,6 +47,14 @@
     </profile>
 
     <profile>
+      <id>oauth2-oracle</id>
+      <modules>
+        <module>oauth2</module>
+        <module>oauth2-oracle</module>
+      </modules>
+    </profile>
+
+    <profile>
       <id>oauth2</id>
       <modules>
         <module>oauth2</module>

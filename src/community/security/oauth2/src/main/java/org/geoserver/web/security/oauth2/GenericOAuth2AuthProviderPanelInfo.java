@@ -8,9 +8,7 @@ import org.geoserver.security.oauth2.GeoServerOAuthAuthenticationFilter;
 import org.geoserver.security.oauth2.OAuth2FilterConfig;
 import org.geoserver.security.web.auth.AuthenticationFilterPanelInfo;
 
-/**
- * Configuration panel extension for {@link GeoServerOAuthAuthenticationFilter}.
- */
+/** Configuration panel extension for {@link GeoServerOAuthAuthenticationFilter}. */
 public class GenericOAuth2AuthProviderPanelInfo
         extends AuthenticationFilterPanelInfo<OAuth2FilterConfig, GenericOAuth2AuthProviderPanel> {
 

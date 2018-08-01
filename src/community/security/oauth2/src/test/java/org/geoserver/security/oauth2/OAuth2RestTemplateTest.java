@@ -13,7 +13,6 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.geoserver.ows.URLMangler.URLType;
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;
@@ -33,10 +32,7 @@ import org.springframework.security.oauth2.client.token.grant.code.Authorization
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 
-/**
- * @author Alessio Fabiani, GeoSolutions S.A.S.
- *
- */
+/** @author Alessio Fabiani, GeoSolutions S.A.S. */
 public class OAuth2RestTemplateTest extends AbstractOAuth2RestTemplateTest {
 
     @Override
@@ -84,16 +80,22 @@ public class OAuth2RestTemplateTest extends AbstractOAuth2RestTemplateTest {
         DefaultOAuth2AccessToken token = new DefaultOAuth2AccessToken("12345");
         token.setTokenType("access_token");
         restTemplate.getOAuth2ClientContext().setAccessToken(token);
-        OAuth2RequestAuthenticator customAuthenticator = new OAuth2RequestAuthenticator() {
+        OAuth2RequestAuthenticator customAuthenticator =
+                new OAuth2RequestAuthenticator() {
 
-            @Override
-            public void authenticate(OAuth2ProtectedResourceDetails resource,
-                    OAuth2ClientContext clientContext, ClientHttpRequest req) {
-                req.getHeaders().set("X-Authorization",
-                        clientContext.getAccessToken().getTokenType() + " " + "Nah-nah-na-nah-nah");
-            }
-
-        };
+                    @Override
+                    public void authenticate(
+                            OAuth2ProtectedResourceDetails resource,
+                            OAuth2ClientContext clientContext,
+                            ClientHttpRequest req) {
+                        req.getHeaders()
+                                .set(
+                                        "X-Authorization",
+                                        clientContext.getAccessToken().getTokenType()
+                                                + " "
+                                                + "Nah-nah-na-nah-nah");
+                    }
+                };
 
         customAuthenticator.authenticate(resource, restTemplate.getOAuth2ClientContext(), request);
         String auth = request.getHeaders().getFirst("X-Authorization");
@@ -118,8 +120,14 @@ public class OAuth2RestTemplateTest extends AbstractOAuth2RestTemplateTest {
 
         assertNotNull(urlMangler);
 
-        Authentication user = new UsernamePasswordAuthenticationToken("admin", "geoserver", Arrays.asList(
-                new GrantedAuthority[] { new SimpleGrantedAuthority("ROLE_ADMINISTRATOR") } ));
+        Authentication user =
+                new UsernamePasswordAuthenticationToken(
+                        "admin",
+                        "geoserver",
+                        Arrays.asList(
+                                new GrantedAuthority[] {
+                                    new SimpleGrantedAuthority("ROLE_ADMINISTRATOR")
+                                }));
         SecurityContextHolder.getContext().setAuthentication(user);
 
         StringBuilder baseURL = new StringBuilder("http://test.geoserver-org/wms");

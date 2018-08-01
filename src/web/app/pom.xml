@@ -1427,6 +1427,16 @@
       </dependencies>
     </profile>
     <profile>
+      <id>oauth2</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver.community</groupId>
+          <artifactId>gs-sec-oauth2</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
       <id>oauth2-google</id>
       <dependencies>
         <dependency>
@@ -1452,6 +1462,21 @@
         <dependency>
           <groupId>org.geoserver.community</groupId>
           <artifactId>gs-sec-oauth2-github</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+      </dependencies>
+    </profile>
+    <profile>
+      <id>oauth2-oracle</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.geoserver.community</groupId>
+          <artifactId>gs-sec-oauth2</artifactId>
+          <version>${project.version}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.geoserver.community</groupId>
+          <artifactId>gs-sec-oauth2-oracle</artifactId>
           <version>${project.version}</version>
         </dependency>
       </dependencies>

@@ -5,12 +5,11 @@
 package org.geoserver.web.security.oauth2;
 
 import java.util.logging.Logger;
-
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.geoserver.security.oauth2.GeoServerOAuthAuthenticationFilter;
-import org.geoserver.security.oauth2.GoogleOAuth2FilterConfig;
+import org.geoserver.security.oauth2.OracleOAuth2FilterConfig;
 import org.geoserver.security.web.auth.PreAuthenticatedUserNameFilterPanel;
 import org.geoserver.web.wicket.GeoServerDialog;
 import org.geoserver.web.wicket.HelpLink;
@@ -18,21 +17,21 @@ import org.geotools.util.logging.Logging;
 
 /**
  * Configuration panel for {@link GeoServerOAuthAuthenticationFilter}.
- * 
+ *
  * @author Alessio Fabiani, GeoSolutions S.A.S.
  */
-public class GoogleOAuth2AuthProviderPanel
-        extends PreAuthenticatedUserNameFilterPanel<GoogleOAuth2FilterConfig> {
+public class OracleOAuth2AuthProviderPanel
+        extends PreAuthenticatedUserNameFilterPanel<OracleOAuth2FilterConfig> {
 
-    private static final long serialVersionUID = 689778998902987791L;
+    private static final long serialVersionUID = 689778998902987734L;
 
     static Logger LOGGER = Logging.getLogger("org.geoserver.security");
 
     GeoServerDialog dialog;
 
-    IModel<GoogleOAuth2FilterConfig> model;
+    IModel<OracleOAuth2FilterConfig> model;
 
-    public GoogleOAuth2AuthProviderPanel(String id, IModel<GoogleOAuth2FilterConfig> model) {
+    public OracleOAuth2AuthProviderPanel(String id, IModel<OracleOAuth2FilterConfig> model) {
         super(id, model);
 
         this.dialog = (GeoServerDialog) get("dialog");

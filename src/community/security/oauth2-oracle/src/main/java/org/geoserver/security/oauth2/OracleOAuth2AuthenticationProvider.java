@@ -1,4 +1,4 @@
-/* (c) 2018 Open Source Geospatial Foundation - all rights reserved
+/* (c) 2016 Open Source Geospatial Foundation - all rights reserved
  * This code is licensed under the GPL 2.0 license, available at the root
  * application directory.
  */
@@ -9,9 +9,10 @@ import org.geoserver.security.GeoServerSecurityManager;
 import org.geoserver.security.config.SecurityNamedServiceConfig;
 import org.geoserver.security.filter.GeoServerSecurityFilter;
 
-public class GenericOAuth2AuthenticationProvider extends GeoServerOAuthAuthenticationProvider {
+/** @author Alessio Fabiani, GeoSolutions S.A.S. */
+public class OracleOAuth2AuthenticationProvider extends GeoServerOAuthAuthenticationProvider {
 
-    public GenericOAuth2AuthenticationProvider(
+    public OracleOAuth2AuthenticationProvider(
             GeoServerSecurityManager securityManager,
             String tokenServices,
             String oauth2SecurityConfiguration,
@@ -30,17 +31,17 @@ public class GenericOAuth2AuthenticationProvider extends GeoServerOAuthAuthentic
 
     @Override
     public void configure(XStreamPersister xp) {
-        xp.getXStream().alias("genericOauth2Authentication", OAuth2FilterConfig.class);
+        xp.getXStream().alias("oracleOauth2Authentication", OracleOAuth2FilterConfig.class);
     }
 
     @Override
     public Class<? extends GeoServerSecurityFilter> getFilterClass() {
-        return GeoServerOAuthAuthenticationFilter.class;
+        return OracleOAuthAuthenticationFilter.class;
     }
 
     @Override
     public GeoServerSecurityFilter createFilter(SecurityNamedServiceConfig config) {
-        return new GeoServerOAuthAuthenticationFilter(
+        return new OracleOAuthAuthenticationFilter(
                 config, tokenServices, oauth2SecurityConfiguration, geoServerOauth2RestTemplate);
     }
 }

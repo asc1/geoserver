@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.geoserver.ows.URLMangler;
 import org.geoserver.ows.URLMangler.URLType;
 import org.geoserver.security.GeoServerSecurityManager;
@@ -46,7 +45,8 @@ public class OAuth2AccessTokenURLManglerTest {
         when(auth.isAuthenticated()).thenReturn(true);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
-        GeoServerOAuth2SecurityConfiguration config = mock(GeoServerOAuth2SecurityConfiguration.class);
+        GeoServerOAuth2SecurityConfiguration config =
+                mock(GeoServerOAuth2SecurityConfiguration.class);
         mangler = new OAuth2AccessTokenURLMangler(manager, config, template);
         token = mock(OAuth2AccessToken.class);
         when(clientContext.getAccessToken()).thenReturn(token);
@@ -59,10 +59,26 @@ public class OAuth2AccessTokenURLManglerTest {
 
         // layer preview-type links should not be mangled
         final Map<String, String> kvp = new HashMap<>();
-        mangler.mangleURL(new StringBuilder("http://localhost:8080/geoserver/"), new StringBuilder("tiger/wms"), kvp, URLType.SERVICE);
-        mangler.mangleURL(new StringBuilder("http://localhost:8080/geoserver/"), new StringBuilder("tiger/ows"), kvp, URLType.SERVICE);
-        mangler.mangleURL(new StringBuilder("http://localhost:8080/geoserver/"), new StringBuilder("wms"), kvp, URLType.SERVICE);
-        mangler.mangleURL(new StringBuilder("http://localhost:8080/geoserver/"), new StringBuilder("ows"), kvp, URLType.SERVICE);
+        mangler.mangleURL(
+                new StringBuilder("http://localhost:8080/geoserver/"),
+                new StringBuilder("tiger/wms"),
+                kvp,
+                URLType.SERVICE);
+        mangler.mangleURL(
+                new StringBuilder("http://localhost:8080/geoserver/"),
+                new StringBuilder("tiger/ows"),
+                kvp,
+                URLType.SERVICE);
+        mangler.mangleURL(
+                new StringBuilder("http://localhost:8080/geoserver/"),
+                new StringBuilder("wms"),
+                kvp,
+                URLType.SERVICE);
+        mangler.mangleURL(
+                new StringBuilder("http://localhost:8080/geoserver/"),
+                new StringBuilder("ows"),
+                kvp,
+                URLType.SERVICE);
         assertEquals(0, kvp.size());
 
         // all other links should be mangled
@@ -79,8 +95,11 @@ public class OAuth2AccessTokenURLManglerTest {
         if (key != null) {
             kvp.put(key, value);
         }
-        mangler.mangleURL(new StringBuilder("http://localhost:8080/geoserver/"), new StringBuilder(path), kvp, URLType.SERVICE);
+        mangler.mangleURL(
+                new StringBuilder("http://localhost:8080/geoserver/"),
+                new StringBuilder(path),
+                kvp,
+                URLType.SERVICE);
         assertEquals(key != null ? 2 : 1, kvp.size());
     }
-
 }

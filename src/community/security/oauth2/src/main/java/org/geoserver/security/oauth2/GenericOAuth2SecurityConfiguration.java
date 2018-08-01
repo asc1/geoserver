@@ -5,7 +5,6 @@
 package org.geoserver.security.oauth2;
 
 import java.util.Arrays;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -25,59 +24,59 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 
 /**
  * Generic REST template for OAuth2 protocol.
- * <p>
- * The procedure will provide a new <b>Client ID</b>, <b>Client Secret</b> and <b>Auth Domain</b>
- * </p>
- * <p>
- * The user must specify the <b>Redirect URIs</b> pointing to the GeoServer instance<br/>
+ *
+ * <p>The procedure will provide a new <b>Client ID</b>, <b>Client Secret</b> and <b>Auth Domain</b>
+ *
+ * <p>The user must specify the <b>Redirect URIs</b> pointing to the GeoServer instance<br>
  * Example:
+ *
  * <ul>
- * <li>http://localhost:8080/geoserver</li>
- * <li>https://localhost:8080/geoserver/</li>
+ *   <li>http://localhost:8080/geoserver
+ *   <li>https://localhost:8080/geoserver/
  * </ul>
- * </p>
- * <p>
- * The generic OAuth2 Filter endpoint can automatically redirect the users at first login <br/>
- * </p>
+ *
+ * <p>The generic OAuth2 Filter endpoint can automatically redirect the users at first login <br>
  */
-@Configuration(value="genericOAuth2SecurityConfiguration")
+@Configuration(value = "genericOAuth2SecurityConfiguration")
 @EnableOAuth2Client
 class GenericOAuth2SecurityConfiguration extends GeoServerOAuth2SecurityConfiguration {
 
-    @Bean(name="genericOAuth2Resource")
+    @Bean(name = "genericOAuth2Resource")
     public OAuth2ProtectedResourceDetails geoServerOAuth2Resource() {
         AuthorizationCodeResourceDetails details = new AuthorizationCodeResourceDetails();
         details.setId("generic-oauth2-client");
 
         details.setGrantType("authorization_code");
         details.setAuthenticationScheme(AuthenticationScheme.header);
-        details.setClientAuthenticationScheme(AuthenticationScheme.form);
+        details.setClientAuthenticationScheme(AuthenticationScheme.header);
 
         return details;
     }
 
-    /**
-     * Must have "session" scope
-     */
-    @Bean(name="genericOauth2RestTemplate")
+    /** Must have "session" scope */
+    @Bean(name = "genericOauth2RestTemplate")
     @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
     public OAuth2RestTemplate geoServerOauth2RestTemplate() {
 
-        OAuth2RestTemplate oAuth2RestTemplate = new OAuth2RestTemplate(geoServerOAuth2Resource(),
-                new DefaultOAuth2ClientContext(getAccessTokenRequest()));
+        OAuth2RestTemplate oAuth2RestTemplate =
+                new OAuth2RestTemplate(
+                        geoServerOAuth2Resource(),
+                        new DefaultOAuth2ClientContext(getAccessTokenRequest()));
 
-        AuthorizationCodeAccessTokenProvider authorizationCodeAccessTokenProvider = new AuthorizationCodeAccessTokenProvider();
+        AuthorizationCodeAccessTokenProvider authorizationCodeAccessTokenProvider =
+                new AuthorizationCodeAccessTokenProvider();
         authorizationCodeAccessTokenProvider.setStateMandatory(false);
 
-        AccessTokenProvider accessTokenProviderChain = new AccessTokenProviderChain(
-                Arrays.<AccessTokenProvider> asList(authorizationCodeAccessTokenProvider,
-                        new ImplicitAccessTokenProvider(),
-                        new ResourceOwnerPasswordAccessTokenProvider(),
-                        new ClientCredentialsAccessTokenProvider()));
+        AccessTokenProvider accessTokenProviderChain =
+                new AccessTokenProviderChain(
+                        Arrays.<AccessTokenProvider>asList(
+                                authorizationCodeAccessTokenProvider,
+                                new ImplicitAccessTokenProvider(),
+                                new ResourceOwnerPasswordAccessTokenProvider(),
+                                new ClientCredentialsAccessTokenProvider()));
 
         oAuth2RestTemplate.setAccessTokenProvider(accessTokenProviderChain);
 
         return oAuth2RestTemplate;
     }
-
 }
