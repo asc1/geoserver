@@ -12,13 +12,13 @@ public class OracleOAuth2FilterConfig extends OAuth2FilterConfig {
 
     public OracleOAuth2FilterConfig() {
         this.accessTokenUri =
-                "https://gxisapi.gxaccess.com/ms_oauth/oauth2/endpoints/oauthservice/tokens";
+                "https://oam.example.com/ms_oauth/oauth2/endpoints/oauthservice/tokens";
         this.userAuthorizationUri =
-                "https://geoaxis.gxaccess.com/ms_oauth/oauth2/endpoints/oauthservice/authorize";
-        this.redirectUri = "http://localhost:8888/geoserver/web/";
+                "https://oam.example.com/ms_oauth/oauth2/endpoints/oauthservice/authorize";
+        this.redirectUri = "http://localhost:8080/geoserver/web/";
         this.checkTokenEndpointUrl =
-                "https://gxisapi.gxaccess.com/ms_oauth/oauth2/endpoints/oauthservice/tokens";
-        this.logoutUri = "https://accounts.google.com/logout";
+                "https://oam.example.comoam.example.com/ms_oauth/oauth2/endpoints/oauthservice/tokens";
+        this.logoutUri = "https://oam.example.com/logout";
         this.scopes = "UserProfile.me";
         this.enableRedirectAuthenticationEntryPoint = false;
         this.forceAccessTokenUriHttps = true;
