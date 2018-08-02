@@ -6,11 +6,7 @@ package org.geoserver.security.oauth2.services;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.util.Map;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import org.geoserver.security.oauth2.GeoServerOAuthRemoteTokenServices;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -58,7 +54,9 @@ public class OracleTokenServices extends GeoServerOAuthRemoteTokenServices {
     @Override
     public void setCheckTokenEndpointUrl(String checkTokenEndpointUrl) {
         super.setCheckTokenEndpointUrl(checkTokenEndpointUrl);
-        userProfileEndpoint = checkTokenEndpointUrl.replace("oauth2/endpoints/oauthservice/tokens", "resources/userprofile/me");
+        userProfileEndpoint =
+                checkTokenEndpointUrl.replace(
+                        "oauth2/endpoints/oauthservice/tokens", "resources/userprofile/me");
     }
 
     @Override
@@ -72,7 +70,7 @@ public class OracleTokenServices extends GeoServerOAuthRemoteTokenServices {
         }
 
         if (checkTokenResponse.containsKey("successful")
-                && !(boolean)checkTokenResponse.get("successful")) {
+                && !(boolean) checkTokenResponse.get("successful")) {
             logger.debug("check_token returned false: " + checkTokenResponse.get("successful"));
             throw new InvalidTokenException(accessToken);
         }
@@ -84,7 +82,7 @@ public class OracleTokenServices extends GeoServerOAuthRemoteTokenServices {
         return tokenConverter.extractAuthentication(checkTokenResponse);
     }
 
-    private void transformToken(String accessToken, Map<String,Object> checkTokenResponse) {
+    private void transformToken(String accessToken, Map<String, Object> checkTokenResponse) {
 
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         HttpHeaders headers = new HttpHeaders();
@@ -100,37 +98,36 @@ public class OracleTokenServices extends GeoServerOAuthRemoteTokenServices {
         checkTokenResponse.put("client_id", clientId);
         checkTokenResponse.put("email", userProfile.get("email"));
 
-
-//        {
-//            "active": true,
-//                "client_id": "l238j323ds-23ij4",
-//                "username": "jdoe",
-//                "scope": "read write dolphin",
-//                "sub": "Z5O3upPC88QrAjx00dis",
-//                "aud": "https://protected.example.net/resource",
-//                "iss": "https://server.example.com/",
-//                "exp": 1419356238,
-//                "iat": 1419350238,
-//                "extension_field": "twenty-seven"
-//        }
-//        String[] jwtParts = accessToken.split("\\.");
-//        Gson gson = new Gson();
-//        Type type = new TypeToken<Map<String, String>>(){}.getType();
-//        String headerJson = new String(Base64.decode(jwtParts[0].getBytes()));
-//        String bodyJson = new String(Base64.decode(jwtParts[1].getBytes()));
-//        String footerJson = new String(Base64.decode(jwtParts[2].getBytes()));
-//
-//        logger.info("JWT Header " + headerJson);
-//        logger.info("JWT Body " + bodyJson);
-//        logger.info("JWT Footer " + footerJson);
-//        Map<String, String> body;
-//
-//        try {
-//            body = gson.fromJson(bodyJson, type);
-//            checkTokenResponse.put("sub", body.get("sub"));
-//        } catch (Exception e) {
-//            logger.warn("Unable to parse JWT - ", e);
-//        }
+        //        {
+        //            "active": true,
+        //                "client_id": "l238j323ds-23ij4",
+        //                "username": "jdoe",
+        //                "scope": "read write dolphin",
+        //                "sub": "Z5O3upPC88QrAjx00dis",
+        //                "aud": "https://protected.example.net/resource",
+        //                "iss": "https://server.example.com/",
+        //                "exp": 1419356238,
+        //                "iat": 1419350238,
+        //                "extension_field": "twenty-seven"
+        //        }
+        //        String[] jwtParts = accessToken.split("\\.");
+        //        Gson gson = new Gson();
+        //        Type type = new TypeToken<Map<String, String>>(){}.getType();
+        //        String headerJson = new String(Base64.decode(jwtParts[0].getBytes()));
+        //        String bodyJson = new String(Base64.decode(jwtParts[1].getBytes()));
+        //        String footerJson = new String(Base64.decode(jwtParts[2].getBytes()));
+        //
+        //        logger.info("JWT Header " + headerJson);
+        //        logger.info("JWT Body " + bodyJson);
+        //        logger.info("JWT Footer " + footerJson);
+        //        Map<String, String> body;
+        //
+        //        try {
+        //            body = gson.fromJson(bodyJson, type);
+        //            checkTokenResponse.put("sub", body.get("sub"));
+        //        } catch (Exception e) {
+        //            logger.warn("Unable to parse JWT - ", e);
+        //        }
 
     }
 
@@ -140,13 +137,12 @@ public class OracleTokenServices extends GeoServerOAuthRemoteTokenServices {
         formData.add("scope", scope);
         formData.add("grant_type", "oracle-idm:/oauth/grant-type/resource-access-token/jwt");
         formData.add("oracle_token_action", "validate");
-//        formData.add("oracle_token_attrs_retrieval", "iss aud exp prn jti exp iat sub");
+        //        formData.add("oracle_token_attrs_retrieval", "iss aud exp prn jti exp iat sub");
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", getAuthorizationHeader(clientId, clientSecret));
 
         return postForMap(checkTokenEndpointUrl, formData, headers);
     }
-    
 
     private String getAuthorizationHeader(String clientId, String clientSecret) {
         String creds = String.format("%s:%s", clientId, clientSecret);
