@@ -19,7 +19,7 @@ public class OracleOAuth2AuthProviderPanelInfo
                 OracleOAuth2FilterConfig, OracleOAuth2AuthProviderPanel> {
 
     /** serialVersionUID */
-    private static final long serialVersionUID = 75616833259749737L;
+    private static final long serialVersionUID = 75616833259749734L;
 
     public OracleOAuth2AuthProviderPanelInfo() {
         setComponentClass(OracleOAuth2AuthProviderPanel.class);

@@ -74,8 +74,8 @@ class OracleOAuth2SecurityConfiguration extends GeoServerOAuth2SecurityConfigura
         details.setGrantType("authorization_code");
         details.setTokenName("authorization_code");
         details.setUseCurrentUri(false);
-        details.setAuthenticationScheme(AuthenticationScheme.query);
-        details.setClientAuthenticationScheme(AuthenticationScheme.form);
+        details.setAuthenticationScheme(AuthenticationScheme.header);
+        details.setClientAuthenticationScheme(AuthenticationScheme.header);
 
         return details;
     }

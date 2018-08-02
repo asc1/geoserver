@@ -23,7 +23,7 @@ import org.geotools.util.logging.Logging;
 public class OracleOAuth2AuthProviderPanel
         extends PreAuthenticatedUserNameFilterPanel<OracleOAuth2FilterConfig> {
 
-    private static final long serialVersionUID = 689778998902987734L;
+    private static final long serialVersionUID = 689778998902987741L;
 
     static Logger LOGGER = Logging.getLogger("org.geoserver.security");
 

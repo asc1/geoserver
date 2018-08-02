@@ -11,17 +11,19 @@ public class OracleOAuth2FilterConfig extends OAuth2FilterConfig {
     private static final long serialVersionUID = -3551428051398501603L;
 
     public OracleOAuth2FilterConfig() {
-        this.accessTokenUri = "https://example.com/o/oauth2/token";
-        this.userAuthorizationUri = "https://accounts.google.com/o/oauth2/auth";
-        this.redirectUri = "http://localhost:8080/geoserver";
-        this.checkTokenEndpointUrl = "https://www.googleapis.com/oauth2/v1/tokeninfo";
+        this.accessTokenUri =
+                "https://gxisapi.gxaccess.com/ms_oauth/oauth2/endpoints/oauthservice/tokens";
+        this.userAuthorizationUri =
+                "https://geoaxis.gxaccess.com/ms_oauth/oauth2/endpoints/oauthservice/authorize";
+        this.redirectUri = "http://localhost:8888/geoserver/web/";
+        this.checkTokenEndpointUrl =
+                "https://gxisapi.gxaccess.com/ms_oauth/oauth2/endpoints/oauthservice/tokens";
         this.logoutUri = "https://accounts.google.com/logout";
-        this.scopes =
-                "https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/userinfo.profile";
+        this.scopes = "UserProfile.me";
         this.enableRedirectAuthenticationEntryPoint = false;
         this.forceAccessTokenUriHttps = true;
         this.forceUserAuthorizationUriHttps = true;
-        this.loginEndpoint = "/j_spring_oauth2_google_login";
-        this.logoutEndpoint = "/j_spring_oauth2_google_logout";
+        this.loginEndpoint = "/j_spring_oauth2_oracle_login";
+        this.logoutEndpoint = "/j_spring_oauth2_oracle_logout";
     }
 }
